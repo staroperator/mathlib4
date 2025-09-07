@@ -977,6 +977,52 @@ theorem toRelIsoLT_ofRelIsoLT {α β} [PartialOrder α] [PartialOrder β]
   ext
   simp
 
+/-- Converts an `OrderIso` into a `RelIso (≤) (≤)`. -/
+def toRelIsoLE (e : α ≃o β) : ((· ≤ ·) : α → α → Prop) ≃r ((· ≤ ·) : β → β → Prop) :=
+  ⟨e.toEquiv, le_iff_le e⟩
+
+@[simp]
+theorem toRelIsoLE_apply (e : α ≃o β) (x : α) : e.toRelIsoLE x = e x :=
+  rfl
+
+@[simp]
+theorem toRelIsoLE_symm (e : α ≃o β) : e.symm.toRelIsoLE = e.toRelIsoLE.symm :=
+  rfl
+
+@[simp]
+theorem coe_toRelIsoLE (e : α ≃o β) : ⇑e.toRelIsoLE = e := rfl
+
+@[simp]
+theorem coe_symm_toRelIsoLE (e : α ≃o β) : ⇑e.toRelIsoLE.symm = e.symm := rfl
+
+/-- Converts a `RelIso (≤) (≤)` into an `OrderIso`. -/
+def ofRelIsoLE {α β} [PartialOrder α] [PartialOrder β]
+    (e : ((· ≤ ·) : α → α → Prop) ≃r ((· ≤ ·) : β → β → Prop)) : α ≃o β :=
+  ⟨e.toEquiv, by simp [le_iff_eq_or_lt, e.injective.eq_iff]⟩
+
+@[simp]
+theorem ofRelIsoLE_apply {α β} [PartialOrder α] [PartialOrder β]
+    (e : ((· ≤ ·) : α → α → Prop) ≃r ((· ≤ ·) : β → β → Prop)) (x : α) : ofRelIsoLE e x = e x :=
+  rfl
+
+@[simp]
+theorem ofRelIsoLE_symm {α β} [PartialOrder α] [PartialOrder β]
+    (e : ((· ≤ ·) : α → α → Prop) ≃r ((· ≤ ·) : β → β → Prop)) :
+    (ofRelIsoLE e).symm = ofRelIsoLE e.symm :=
+  rfl
+
+@[simp]
+theorem ofRelIsoLE_toRelIsoLE {α β} [PartialOrder α] [PartialOrder β] (e : α ≃o β) :
+    ofRelIsoLE (toRelIsoLE e) = e := by
+  ext
+  simp
+
+@[simp]
+theorem toRelIsoLE_ofRelIsoLE {α β} [PartialOrder α] [PartialOrder β]
+    (e : ((· ≤ ·) : α → α → Prop) ≃r ((· ≤ ·) : β → β → Prop)) : toRelIsoLE (ofRelIsoLE e) = e := by
+  ext
+  simp
+
 /-- To show that `f : α → β`, `g : β → α` make up an order isomorphism of linear orders,
 it suffices to prove `cmp a (g b) = cmp (f a) b`. -/
 def ofCmpEqCmp {α β} [LinearOrder α] [LinearOrder β] (f : α → β) (g : β → α)
